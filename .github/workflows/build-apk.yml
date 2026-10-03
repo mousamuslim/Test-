@@ -1,37 +1,21 @@
-name: Build Android APK
+name: Build_APK
 
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً
+  workflow_dispatch:   # Manual run from the Actions tab
 
 jobs:
-  build:
+  build-android:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write   # Required to upload artifacts
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
+        
+      - name: Buildozer-Kivy-Apk-Creator
+        uses: wildspider57389928/Buildozer-Kivy-APK_Creator@4.0.0
         with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          project-dir: .
+          command: buildozer android debug
